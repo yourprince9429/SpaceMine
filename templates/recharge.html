@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SpaceMine - 在线充值</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/recharge.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/back-button.css') }}" />
+  </head>
+  <body>
+    <div class="starfield"></div>
+    <div class="wrap">
+      <section class="section">
+        <div class="title">充值方式選擇</div>
+        <div class="option" id="optUsdt">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 11.73V17h-2v-3.27A7.23 7.23 0 0 1 5 10h14a7.23 7.23 0 0 1-6 3.73zM7 8V6h10v2Z"/></svg>
+          </div>
+          <div class="meta">
+            <div class="name">USDT充值</div>
+            <div class="desc">支持 TRC20 / ERC20 網路</div>
+          </div>
+          <button class="go" id="goUsdt">前往</button>
+        </div>
+        <div class="option" id="optCard">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M3 5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm0 4h18V7H3zm0 2v6h18v-6z"/></svg>
+          </div>
+          <div class="meta">
+            <div class="name">銀行卡充值</div>
+            <div class="desc">支持 Visa / MasterCard</div>
+          </div>
+          <button class="go" id="goCard">前往</button>
+        </div>
+        <div class="tips">
+          <div class="hdr">溫馨提示：</div>
+          <ul>
+            <li>充值成功後會自動到賬，如有延遲請聯繫客服</li>
+            <li>請確保充值資料填寫正確</li>
+            <li>USDT 充值需要上傳憑證截圖</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/recharge.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/back-button.js') }}"></script>
+
+    <div class="back-btn">
+      <a id="backLink" href="/" aria-label="返回首页">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 18l-6-6 6-6v12z"/></svg>
+        <span id="backText">返回首页</span>
+      </a>
+    </div>
+  </body>
+</html>

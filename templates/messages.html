@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>我的消息 - SpaceMine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/back-button.css') }}" />
+</head>
+<body>
+    <div class="starfield"></div>
+    <div class="wrap">
+        <section id="page-messages" class="page active">
+            <div class="page-header">
+                <h1 class="page-title">我的消息</h1>
+            </div>
+
+            <div class="frost-card messages-list">
+                <table class="messages-table" id="messagesTable">
+                    <thead>
+                        <tr>
+                            <th>消息标题</th>
+                            <th>时间</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="messagesTableBody">
+                        <!-- 消息列表将在这里动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="back-btn bottom">
+          <a href="/dashboard?tab=user" aria-label="返回我的">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 18l-6-6 6-6v12z"/></svg>
+            返回我的
+          </a>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+</body>
+</html>

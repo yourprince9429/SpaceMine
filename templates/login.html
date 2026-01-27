@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SpaceMine - 登入</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}" />
+  </head>
+  <body>
+    <div class="bg-cover" aria-hidden="true"></div>
+    <div class="starfield"></div>
+    <main class="content" style="position: relative; z-index: 1;">
+      <div class="center-wrap">
+        <section class="card" aria-label="登入">
+          <h1>登入</h1>
+          <form method="post" novalidate>
+            <div class="field">
+              <label for="username">帳號</label>
+              <input id="username" name="username" class="input" placeholder="請輸入帳號" required />
+            </div>
+            <div class="field">
+              <label for="password">密碼</label>
+              <input id="password" name="password" class="input" type="password" placeholder="請輸入密碼" required />
+            </div>
+            <div class="actions">
+              <button type="submit" class="btn">登入</button>
+              <a class="muted" href="/register">沒有帳號？去註冊</a>
+            </div>
+          </form>
+          <div class="agreements">
+            <label class="agree-line">
+              <input type="checkbox" id="agreeLogin" checked />
+              我已閱讀並同意 <a href="#" id="userAgreementLinkLogin">用戶協議</a> 和 <a href="#" id="privacyPolicyLinkLogin">隱私政策</a>
+            </label>
+          </div>
+          <div id="status" class="muted status"></div>
+        </section>
+      </div>
+    </main>
+
+    <div class="modal" id="agreementModalLogin">
+      <div class="modal-card">
+        <h2 id="modalTitleLogin"></h2>
+        <div class="modal-content" id="modalContentLogin"></div>
+        <button class="btn" id="modalCloseLogin">關閉</button>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+  </body>
+</html>

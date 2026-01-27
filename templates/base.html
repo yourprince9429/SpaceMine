@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}SpaceMine{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/back-button.css') }}" />
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+
+    <div class="back-btn">
+        <a id="backLink" href="/dashboard#user" aria-label="返回我的">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 18l-6-6 6-6v12z"/></svg>
+            <span id="backText">返回我的</span>
+        </a>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/back-button.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

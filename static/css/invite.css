@@ -1,0 +1,280 @@
+.invite-container {
+  width: min(90vw, 720px);
+  margin: 0 auto;
+  padding: 8px;
+}
+
+.invite-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.invite-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #e6f0ff;
+}
+
+.invite-header .subtitle {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #a8c4ff;
+}
+
+.invite-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-box {
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  color: #e6f0ff;
+}
+
+.stat-box .value {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.stat-box .label {
+  font-size: 12px;
+  color: #a8c4ff;
+}
+
+.invite-code-section {
+  margin-bottom: 24px;
+}
+
+.invite-code-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.invite-code {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 600;
+  color: #88b6ff;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.copy-button {
+  appearance: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: #e6f0ff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.copy-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.copy-button.copied {
+  background: rgba(76, 175, 80, 0.2);
+  border-color: rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+}
+
+.invite-rules {
+  margin-bottom: 24px;
+}
+
+.invite-rules h2 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #e6f0ff;
+}
+
+.rule-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.rule-item:last-child {
+  margin-bottom: 0;
+}
+
+.rule-item .icon {
+  width: 20px;
+  height: 20px;
+  color: #88b6ff;
+  flex-shrink: 0;
+}
+
+.rule-item .content {
+  flex: 1;
+}
+
+.rule-item .title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e6f0ff;
+  margin-bottom: 4px;
+}
+
+.rule-item .desc {
+  font-size: 12px;
+  color: #a8c4ff;
+  line-height: 1.4;
+}
+
+.invite-history {
+  margin-bottom: 24px;
+}
+
+.invite-history h2 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #e6f0ff;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.history-item .user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.history-item .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: grid;
+  place-items: center;
+  color: #e6f0ff;
+}
+
+.history-item .user-name {
+  font-size: 14px;
+  color: #e6f0ff;
+}
+
+.history-item .time {
+  font-size: 12px;
+  color: #a8c4ff;
+}
+
+.history-item .reward {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4caf50;
+}
+
+.invite-footer {
+  text-align: center;
+}
+
+.invite-footer .share-button {
+  appearance: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  border: 0;
+  background: linear-gradient(90deg, #88b6ff, #5aa0ff);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(80, 140, 255, 0.35);
+}
+
+.invite-footer .share-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(80, 140, 255, 0.45);
+}
+
+.invite-footer .share-button:active {
+  transform: translateY(0);
+}
+
+.reward-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tier-card {
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.tier-card.premium {
+  background: linear-gradient(135deg, rgba(255, 123, 46, 0.1), rgba(255, 123, 46, 0.05));
+  border-color: rgba(255, 123, 46, 0.2);
+}
+
+.tier-card .tier-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e6f0ff;
+  margin-bottom: 8px;
+}
+
+.tier-card .requirement {
+  font-size: 12px;
+  color: #a8c4ff;
+  margin-bottom: 12px;
+}
+
+.tier-card .reward {
+  font-size: 18px;
+  font-weight: 700;
+  color: #4caf50;
+}
+
+.tier-card .icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  color: #ffd46b;
+}

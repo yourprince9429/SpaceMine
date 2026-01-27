@@ -1,0 +1,335 @@
+{% extends "base.html" %}
+
+{% block title %}SpaceMine - 管理员后台{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="admin-header">
+        <h1 style="margin: 0;">管理员后台</h1>
+    </div>
+
+    <div class="admin-tabs">
+        <button class="admin-tab" onclick="showTab(this, 'user-management')">用户管理</button>
+        <button class="admin-tab" onclick="showTab(this, 'recharge-review')">USDT充值审核</button>
+        <button class="admin-tab" onclick="showTab(this, 'withdraw-review')">提现审核</button>
+        <button class="admin-tab" onclick="showTab(this, 'credit-card-generation-records')">信用卡生成记录</button>
+        <button class="admin-tab" onclick="showTab(this, 'all-credit-cards')">所有信用卡</button>
+        <button class="admin-tab" onclick="showTab(this, 'notice-management')">公告管理</button>
+        <button class="admin-tab" onclick="showTab(this, 'config-management')">业务参数配置</button>
+    </div>
+
+    <div id="user-management" class="tab-content" style="display: none;">
+        <div class="admin-card">
+            <h3>用户管理</h3>
+            <div class="search-box">
+                <input type="text" id="userSearch" placeholder="搜索用户名或邮箱..." onkeyup="searchUsers()">
+            </div>
+            <table class="admin-table" id="userTable">
+                <thead>
+                    <tr>
+                        <th>用户ID</th>
+                        <th>用户名</th>
+                        <th>邮箱</th>
+                        <th>邀请码</th>
+                        <th>状态</th>
+                        <th>角色</th>
+                        <th>注册时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="recharge-review" class="tab-content" style="display: none;">
+        <div class="admin-card">
+            <h3>USDT充值审核</h3>
+            <div class="search-box">
+                <input type="text" id="rechargeSearch" placeholder="搜索用户名或订单号..." onkeyup="searchRecharges()">
+                <select id="rechargeStatusFilter" class="filter-select" onchange="filterRecharges()">
+                    <option value="">所有状态</option>
+                    <option value="pending">待审核</option>
+                    <option value="completed">已通过</option>
+                    <option value="failed">已拒绝</option>
+                </select>
+            </div>
+            <table class="admin-table" id="rechargeTable">
+                <thead>
+                    <tr>
+                        <th>充值ID</th>
+                        <th>用户ID</th>
+                        <th>用户名</th>
+                        <th>金额</th>
+                        <th>状态</th>
+                        <th>订单号</th>
+                        <th>创建时间</th>
+                        <th>审核人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="withdraw-review" class="tab-content" style="display: none;">
+        <div class="admin-card">
+            <h3>提现审核</h3>
+            
+            <div class="withdrawal-stats" id="withdrawalStats">
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="withdrawSearch" placeholder="搜索用户ID、用户名或订单号..." onkeyup="searchWithdrawals()">
+                <select id="statusFilter" class="filter-select" onchange="filterWithdrawals()">
+                    <option value="">所有状态</option>
+                    <option value="pending">待审核</option>
+                    <option value="processing">处理中</option>
+                    <option value="completed">已通过</option>
+                    <option value="failed">失败</option>
+                </select>
+                <select id="methodFilter" class="filter-select" onchange="filterWithdrawals()">
+                    <option value="">所有方式</option>
+                    <option value="usdt">USDT提现</option>
+                    <option value="bank">银行卡提现</option>
+                </select>
+            </div>
+
+            <table class="admin-table" id="withdrawTable">
+                <thead>
+                    <tr>
+                        <th>提现ID</th>
+                        <th>用户ID</th>
+                        <th>用户名</th>
+                        <th>金额</th>
+                        <th>提现方式</th>
+                        <th>状态</th>
+                        <th>订单号</th>
+                        <th>创建时间</th>
+                        <th>审核人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="credit-card-generation-records" class="tab-content" style="display: none;">
+        <div class="admin-card">
+            <h3>信用卡生成记录</h3>
+            <button class="btn btn-primary" onclick="showGenerateCreditCardsModal()" style="margin-bottom: 15px;">新增生成记录</button>
+            <table class="admin-table" id="generationTable">
+                <thead>
+                    <tr>
+                        <th>记录ID</th>
+                        <th>生成者用户名</th>
+                        <th>生成时间</th>
+                        <th>卡片数量</th>
+                        <th>备注</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="all-credit-cards" class="tab-content" style="display: none;">
+        <div class="admin-card">
+            <h3>所有信用卡</h3>
+            <div class="search-box">
+                <input type="text" id="usernameSearch" placeholder="搜索生成者用户名..." class="search-input">
+                <input type="text" id="cardholderNameSearch" placeholder="搜索持卡人姓名..." class="search-input">
+                <input type="text" id="cardNumberSearch" placeholder="搜索信用卡号..." class="search-input">
+                <button class="btn btn-primary" onclick="searchCreditCards()">搜索</button>
+            </div>
+            <div class="page-size-selector">
+                <label for="creditCardPageSize">每页显示：</label>
+                <select id="creditCardPageSize" class="filter-select" onchange="changeCreditCardPageSize()">
+                    <option value="10">10条</option>
+                    <option value="20">20条</option>
+                    <option value="50">50条</option>
+                    <option value="100">100条</option>
+                </select>
+            </div>
+            <table class="admin-table" id="creditCardTable">
+                <thead>
+                    <tr>
+                        <th>卡片ID</th>
+                        <th>持卡人姓名</th>
+                        <th>有效期</th>
+                        <th>卡号</th>
+                        <th>安全码</th>
+                        <th>充值状态</th>
+                        <th>充值次数</th>
+                        <th>生成者</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div id="creditCardPagination" class="pagination-container"></div>
+        </div>
+    </div>
+
+    <div id="notice-management" class="tab-content" style="display: none;">
+        <div class="admin-card">
+            <h3>公告管理</h3>
+            <button class="btn btn-primary" onclick="showCreateNoticeModal()" style="margin-bottom: 15px;">添加公告</button>
+            <table class="admin-table" id="noticeTable">
+                <thead>
+                    <tr>
+                        <th>公告ID</th>
+                        <th>标题</th>
+                        <th>内容</th>
+                        <th>发布用户</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="config-management" class="tab-content" style="display: none;">
+        <div class="admin-card">
+            <h3>业务参数配置</h3>
+            <table class="admin-table" id="configTable">
+                <thead>
+                    <tr>
+                        <th>参数名称</th>
+                        <th>参数值</th>
+                        <th>设置人</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="admin-card">
+            <h3>客服信息管理</h3>
+            <table class="admin-table" id="supportTable">
+                <thead>
+                    <tr>
+                        <th>客服名称</th>
+                        <th>邮箱</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<div id="confirmModal" class="modal confirm-modal">
+    <div class="modal-content">
+        <h3 id="confirmTitle">确认操作</h3>
+        <p id="confirmMessage">确定要执行此操作吗？</p>
+        <div class="btn-group">
+            <button class="btn btn-danger" onclick="executeConfirmedAction()">确认</button>
+            <button class="btn" onclick="closeConfirmModal()">取消</button>
+        </div>
+    </div>
+</div>
+
+<div id="resultModal" class="modal result-modal">
+    <div class="modal-content">
+        <h3 id="resultTitle">操作结果</h3>
+        <p id="resultMessage">操作已完成</p>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="closeResultModal()">确定</button>
+        </div>
+    </div>
+</div>
+
+<div id="inputModal" class="modal input-modal">
+    <div class="modal-content">
+        <h3 id="inputTitle">输入信息</h3>
+        <div class="form-group">
+            <label for="inputField1">邮箱</label>
+            <input type="email" id="inputField1" placeholder="请输入邮箱">
+        </div>
+        <div class="form-group">
+            <label for="inputField2">客服名称</label>
+            <input type="text" id="inputField2" placeholder="请输入客服名称">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="submitInputModal()">确定</button>
+            <button class="btn" onclick="closeInputModal()">取消</button>
+        </div>
+    </div>
+</div>
+
+<div id="generateCreditCardsModal" class="modal input-modal">
+    <div class="modal-content">
+        <h3>生成信用卡</h3>
+        <div class="form-group">
+            <label for="generateTitle">标题</label>
+            <input type="text" id="generateTitle" placeholder="请输入标题">
+        </div>
+        <div class="form-group">
+            <label for="generateCount">信用卡数量</label>
+            <input type="number" id="generateCount" placeholder="请输入生成数量" min="1" max="1000">
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateCreditCards()">确定</button>
+            <button class="btn" onclick="closeGenerateCreditCardsModal()">取消</button>
+        </div>
+    </div>
+</div>
+
+<div id="creditCardGenerationDetailModal" class="modal">
+    <div class="modal-content modal-large">
+        <span class="close" onclick="closeCreditCardGenerationDetailModal()">&times;</span>
+        <div id="creditCardGenerationDetailContent"></div>
+    </div>
+</div>
+
+<div id="createNoticeModal" class="modal input-modal">
+    <div class="modal-content">
+        <h3>添加公告</h3>
+        <div class="form-group">
+            <label for="noticeTitle">标题</label>
+            <input type="text" id="noticeTitle" placeholder="请输入公告标题">
+        </div>
+        <div class="form-group">
+            <label for="noticeContent">内容</label>
+            <textarea id="noticeContent" placeholder="请输入公告内容" rows="5"></textarea>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="createNotice()">确定</button>
+            <button class="btn" onclick="closeCreateNoticeModal()">取消</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

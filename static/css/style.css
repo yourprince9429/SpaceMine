@@ -1,0 +1,242 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  background: #000; /* 星空背景底色 */
+  color: #e6f0ff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  overflow-x: hidden; /* 禁止移动端横向滚动 */
+}
+
+.starfield::before,
+.starfield::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-repeat: repeat;
+  pointer-events: none;
+}
+/* 层 1：细小星点 */
+.starfield::before {
+  background-image: radial-gradient(2px 2px at 20px 30px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1px 1px at 100px 80px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1.5px 1.5px at 200px 150px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1.2px 1.2px at 300px 220px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1.2px 1.2px at 50px 120px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1.8px 1.8px at 140px 180px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1px 1px at 260px 60px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1.5px 1.5px at 340px 300px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1px 1px at 80px 240px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1.4px 1.4px at 180px 40px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1.2px 1.2px at 220px 280px, #fff, rgba(255,255,255,0)),
+                    radial-gradient(1.6px 1.6px at 320px 120px, #fff, rgba(255,255,255,0));
+  background-size: 400px 400px;
+  opacity: 0.55;
+  animation: drift1 120s linear infinite;
+}
+/* 层 2：更稀疏星点 */
+.starfield::after {
+  background-image: radial-gradient(2.2px 2.2px at 50px 200px, #cfe7ff, rgba(255,255,255,0)),
+                    radial-gradient(2.8px 2.8px at 180px 90px, #cfe7ff, rgba(255,255,255,0)),
+                    radial-gradient(1.6px 1.6px at 260px 300px, #cfe7ff, rgba(255,255,255,0));
+  background-size: 600px 600px;
+  opacity: 0.85;
+  animation: drift2 180s linear infinite;
+}
+
+@keyframes drift1 {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-200px); }
+}
+@keyframes drift2 {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-300px); }
+}
+
+.content {
+  position: relative;
+  min-height: calc(100svh - 64px);
+  padding: 0 0 100px 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+/* 仅"我的"页顶部留白 10% 视口高度 */
+#page-user {
+  padding-top: 10vh;
+  min-height: calc(100svh - 64px - 10vh);
+  box-sizing: border-box;
+}
+
+.page { display: none; overflow-x: hidden; }
+.page.active { display: block; }
+
+.home-header { display:flex; align-items:end; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.home-header h1 { margin:0; font-size:22px; }
+.home-header .muted { color:#a8c4ff; font-size:13px; }
+
+/* 轮播 */
+.carousel { position: relative; width: 100%; max-width: 720px; margin: 0 auto 4px; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+.carousel .slides { position: relative; aspect-ratio: 16 / 12; height: auto; }
+.carousel .slide { position:absolute; inset:0; background: linear-gradient(135deg, rgba(28,38,58,.8), rgba(14,18,28,.8)); background-size: cover; background-position: top center; opacity:0; transition: opacity .6s ease; display:flex; align-items:center; justify-content:center; }
+.carousel .slide.current { opacity:1; }
+.carousel .placeholder { color:#cfe7ff; font-size:18px; letter-spacing:1px; text-shadow: 0 2px 6px rgba(0,0,0,.6); }
+.carousel .dots { position:absolute; left:0; right:0; bottom:10px; display:flex; gap:8px; justify-content:center; }
+.carousel .dot { width:10px; height:10px; border-radius:50%; border:0; background: rgba(255,255,255,.4); cursor:pointer; }
+.carousel .dot.active { background:#fff; }
+
+/* 首页操作按钮 */
+.action-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; max-width:720px; margin: 8px auto 0; }
+.action-grid .action { appearance:none; height:48px; border-radius:12px; border:1px solid rgba(255,255,255,.25); background: linear-gradient(180deg, rgba(30,46,74,.9), rgba(20,30,52,.9)); color:#e6f0ff; font-size:16px; letter-spacing:.5px; cursor:pointer; box-shadow: 0 4px 10px rgba(0,0,0,.35); }
+.action-grid .action:hover { filter: brightness(1.08); }
+
+/* 首页图片卡片布局 */
+.action-cards { display: grid; column-gap: 5px; row-gap: 6px; width: min(96vw, 720px); margin: 0 auto; grid-template-columns: 1fr 1fr; align-items: stretch; justify-items: stretch; box-sizing: border-box; }
+.action-card { position: relative; display: block; border-radius: 0; overflow: visible; box-shadow: none; background: transparent; border: 0; }
+.action-card { cursor: pointer; margin: 0; padding: 0; border-radius: 12px; overflow: hidden; }
+.action-card img { width: 100%; height: 100%; object-fit: contain; display: block; background: transparent; border: 0; }
+
+/* 正方形网格定位：左侧邀请好友占两行，右侧上下为多种游戏与在线充值 */
+.action-card.invite { grid-column: 1; grid-row: 1 / span 2; aspect-ratio: 1 / 2; }
+.action-card.games { grid-column: 2; grid-row: 1; aspect-ratio: 1 / 1; }
+.action-card.recharge { grid-column: 2; grid-row: 2; aspect-ratio: 1 / 1; }
+.action-card { transition: transform .12s ease, box-shadow .12s ease; }
+.action-card:active { transform: scale(.98); box-shadow: 0 6px 16px rgba(80,140,255,.28); }
+
+/* 右上图贴底部、右下图贴顶部 */
+.action-card.games img { object-position: bottom center; }
+.action-card.recharge img { object-position: top center; }
+.action-card.invite { grid-column: 1; grid-row: 1 / span 2; aspect-ratio: 1 / 2; }
+.action-card.games { grid-column: 2; grid-row: 1; aspect-ratio: 1 / 1; }
+.action-card.recharge { grid-column: 2; grid-row: 2; aspect-ratio: 1 / 1; }
+.action-card .label { display: none; }
+
+.promo-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: min(96vw, 720px); margin: 6px auto 0; }
+.promo-card { position: relative; display: block; border-radius: 12px; overflow: hidden; }
+.promo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.promo-label { position: absolute; left: 12px; right: 12px; bottom: 10px; color: #e6f0ff; font-size: 14px; line-height: 1.4; background: rgba(10,16,28,.35); padding: 8px 10px; border-radius: 10px; }
+
+@media (max-width: 480px) {
+  .carousel { max-width: 96vw; }
+  .carousel .slides { aspect-ratio: 16 / 12; }
+  .action-cards { width: 96vw; column-gap: 5px; row-gap: 6px; grid-template-columns: 1fr 1fr; margin: 0 auto; }
+  .action-card.invite { aspect-ratio: 1 / 2; }
+  .action-card.games, .action-card.recharge { aspect-ratio: 1 / 1; }
+  .promo-cards { width: 96vw; gap: 8px; }
+  .action-card.invite { aspect-ratio: 1 / 2; }
+  .action-card.games, .action-card.recharge { aspect-ratio: 1 / 1; }
+}
+
+@media (max-width: 360px) {
+  .action-cards { grid-template-columns: 1fr; }
+  .action-card.invite, .action-card.games, .action-card.recharge { grid-column: auto; grid-row: auto; aspect-ratio: 1 / 1; }
+
+}
+
+.tabbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 64px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: rgba(10, 16, 28, 0.75);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.tabbar button {
+  appearance: none;
+  background: transparent;
+  color: #cfe7ff;
+  border: 0;
+  font-size: 20px;
+  letter-spacing: 0.4px;
+  padding: 4px 6px;
+  border-radius: 10px;
+  position: relative;
+  transition: background-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+  display: grid;
+  grid-auto-flow: row;
+  justify-items: center;
+  align-content: center;
+  gap: 2px;
+}
+
+.tabbar button.active {
+  color: #ffffff;
+  font-weight: 600;
+  background: rgba(120, 170, 255, 0.18);
+  box-shadow: 0 4px 12px rgba(80,140,255,.35), inset 0 0 0 1px rgba(255,255,255,.15);
+  transform: translateY(-2px);
+}
+
+.tabbar button.active::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 4px;
+  height: 3px;
+  background: linear-gradient(90deg, #88b6ff, #ffffff);
+  border-radius: 3px;
+}
+
+.tabbar .icon { line-height: 0; color: #88b6ff; }
+.tabbar button.active .icon { color: #ffffff; }
+.tabbar .label { font-size: 16px; }
+body {
+  background: linear-gradient(180deg,#0e1a3a,#0b1228);
+  background-attachment: fixed;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.7) 60%, transparent 61%),
+    radial-gradient(1px 1px at 28% 72%, rgba(136,182,255,.6) 60%, transparent 61%),
+    radial-gradient(1px 1px at 44% 26%, rgba(255,255,255,.5) 60%, transparent 61%),
+    radial-gradient(1px 1px at 66% 14%, rgba(255,255,255,.6) 60%, transparent 61%),
+    radial-gradient(1px 1px at 78% 64%, rgba(136,182,255,.5) 60%, transparent 61%),
+    radial-gradient(1px 1px at 9% 55%, rgba(255,255,255,.4) 60%, transparent 61%),
+    radial-gradient(1px 1px at 52% 78%, rgba(255,255,255,.5) 60%, transparent 61%),
+    radial-gradient(1px 1px at 88% 32%, rgba(136,182,255,.5) 60%, transparent 61%),
+    radial-gradient(1px 1px at 35% 38%, rgba(255,255,255,.6) 60%, transparent 61%),
+    radial-gradient(1px 1px at 70% 86%, rgba(255,255,255,.6) 60%, transparent 61%),
+    radial-gradient(1px 1px at 20% 40%, rgba(255,255,255,.6) 60%, transparent 61%),
+    radial-gradient(1px 1px at 60% 20%, rgba(136,182,255,.6) 60%, transparent 61%),
+    radial-gradient(1px 1px at 80% 50%, rgba(255,255,255,.5) 60%, transparent 61%);
+  opacity: .35;
+}
+
+.user-header { width: min(90vw, 720px); margin: 8px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.user-header .avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.18); display: grid; place-items: center; color: #e6f0ff; }
+.user-header .avatar svg { color: #e6f0ff; }
+.user-header .info { flex: 1; display: grid; gap: 4px; }
+.user-name-row { display: inline-flex; align-items: center; gap: 6px; }
+.user-name { font-size: 18px; font-weight: 600; }
+.status-badge { font-size: 12px; padding: 0 11px 2px 9px; height: 22px; line-height: 22px; border-radius: 11px; background: linear-gradient(90deg, rgba(120,170,255,.36), rgba(120,170,255,.22)); color: #fff; display: inline-flex; align-items: center; gap: 6px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+.status-badge .vip-icon { color: #ffd46b; width: 14px; height: 14px; display: block; }
+.user-id { font-size: 13px; color: #a8c4ff; }
+.settings-btn { appearance: none; background: transparent; border: 0; color: #cfe7ff; width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; }
+
+.frost-card { width: min(90vw, 720px); margin: 8px auto; border-radius: 12px; padding: 12px; background: rgba(255,255,255,.08); backdrop-filter: blur(8px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 12px 28px rgba(0,0,0,.45); }
+.frost-card .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.frost-card .title { font-size: 16px; font-weight: 600; }
+.frost-card .desc { font-size: 13px; color: #cfe7ff; margin-bottom: 10px; }
+.invite-card .metrics { display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: 12px; }
+.metric .num { font-size: 18px; font-weight: 700; }
+.metric .label { font-size: 12px; color: #a8c4ff; }
+.primary { appearance: none; border: 0; border-radius: 10px; padding: 10px 14px; color: #fff; background: linear-gradient(90deg, #88b6ff, #5aa0ff); box-shadow: 0 6px 14px rgba(80,140,255,.35); cursor: pointer; }
+
+.quick-card .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.quick-grid .item { display: grid; justify-items: center; align-content: center; gap: 6px; padding: 10px; border-radius: 12px; background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); color: #e6f0ff; text-decoration: none; }
+.quick-grid .item .icon { line-height: 0; color: #88b6ff; }
+.quick-grid .item .label { font-size: 14px; }
+
+@media (max-width: 480px) {
+  .user-header { width: 90vw; }
+  .frost-card { width: 90vw; }
+}

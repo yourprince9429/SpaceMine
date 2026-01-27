@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>潮創宇宙-充值紀錄</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/recharge_history.css') }}" />
+  </head>
+  <body>
+    <div class="starfield"></div>
+    <div class="wrap">
+      <section class="section">
+        <div class="title">充值紀錄</div>
+        
+        <!-- 汇总区域 -->
+        <div class="summary">
+          <div>
+            <div class="tit">累計充值</div>
+            <div id="sumAmt" class="val">0.00</div>
+          </div>
+          <div>
+            <div class="tit">充值次數</div>
+            <div id="sumCnt" class="val">0</div>
+          </div>
+        </div>
+        
+        <!-- 状态筛选标签 -->
+        <div class="tabs">
+          <button class="btn active" data-s="all">全部</button>
+          <button class="btn" data-s="pending">待處理</button>
+          <button class="btn" data-s="completed">成功</button>
+          <button class="btn" data-s="failed">失敗</button>
+        </div>
+        
+        <!-- 充值记录列表 -->
+        <div id="list" class="list">
+          <div class="empty-state">載入中...</div>
+        </div>
+      </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/recharge_history.js') }}"></script>
+
+    <div class="back-btn">
+      <a id="backLink" href="/dashboard#user" aria-label="返回我的">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 18l-6-6 6-6v12z"/></svg>
+        <span id="backText">返回我的</span>
+      </a>
+    </div>
+  </body>
+</html>

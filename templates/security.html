@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>潮創宇宙-賬號安全</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/security.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/back-button.css') }}" />
+  </head>
+  <body>
+    <div class="starfield"></div>
+    <div class="wrap">
+      <section class="page active">
+        <div class="page-header">
+          <h1 class="page-title">賬號安全</h1>
+        </div>
+        <div class="frost-card">
+          <div class="grid3">
+            <button class="btn secondary" id="btnReal">實名認證</button>
+            <button class="btn secondary" id="btnPayPwd">交易密碼</button>
+            <button class="btn secondary" id="btnLoginPwd">登入密碼</button>
+            <button class="btn secondary" id="btnBindEmail">綁定郵箱</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="back-btn bottom">
+        <a href="/dashboard?tab=user" aria-label="返回我的">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 18l-6-6 6-6v12z"/></svg>
+          返回我的
+        </a>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/account_security.page.js') }}"></script>
+  </body>
+</html>

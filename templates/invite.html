@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>潮創宇宙-邀请好友</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/invite.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/back-button.css') }}" />
+  </head>
+  <body>
+    <div class="starfield"></div>
+    <div class="wrap">
+      <div class="banner">
+        <img src="{{ url_for('static', filename='img/18.png') }}" alt="邀请好友" />
+      </div>
+      <section class="card">
+        <div class="hdr">
+          <div>好友能量方塊獎勵</div>
+          <a href="#" style="color:#88b6ff; font-size:13px;">詳情</a>
+        </div>
+        <div class="desc">直邀好友在本平台瞞買卡，你可以獲得豐厚的能量方塊奬勵</div>
+        <div class="body">
+          <div class="grid">
+            <div class="metric">
+              <div class="num" id="todayReward">0.0000</div>
+              <div class="label">今日獎勵</div>
+            </div>
+            <div class="metric">
+              <div class="num" id="totalReward">0.0000</div>
+              <div class="label">累計獎勵</div>
+            </div>
+            <div class="metric">
+              <div class="num" id="teamIncome">0.0000</div>
+              <div class="label">團隊收益</div>
+            </div>
+            <div class="metric">
+              <div class="num" id="rate">0%</div>
+              <div class="label">收益率</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="my" id="friendLine">我的好友：0 人</div>
+        <div id="usersList" style="padding: 0 16px 16px;">
+          <!-- 下级用户列表将在这里显示 -->
+        </div>
+      </section>
+      <div class="cta"><button class="btn" id="btnInvite">邀請好友組隊挖礦石</button></div>
+    </div>
+
+    <div class="share-modal" id="shareModal">
+      <div class="share-card">
+        <div class="share-top">
+          <div>
+            <div class="share-title">邀請好友</div>
+            <div class="share-sub">邀請好友來探索，更多能量方塊等你挖掘！</div>
+          </div>
+        </div>
+        <div class="share-bottom">
+          <div class="share-info">
+            <div class="share-name" id="shareName">使用者</div>
+            <div class="share-code" id="shareCode">邀請碼：</div>
+          </div>
+          <div class="share-qr"><img id="shareQrImg" alt="QR" style="width:100%;height:100%;display:block;"/></div>
+        </div>
+        <div class="share-actions">
+          <button class="btn" id="shareClose">關閉</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/invite.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/back-button.js') }}"></script>
+
+    <div class="back-btn">
+      <a id="backLink" href="/" aria-label="返回首页">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 18l-6-6 6-6v12z"/></svg>
+        <span id="backText">返回首页</span>
+      </a>
+    </div>
+  </body>
+</html>
