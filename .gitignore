@@ -54,3 +54,7 @@ yarn.lock
 
 .pytest_cache/
 .cache/
+
+deploy_package_*
+*_deploy_*.tar.gz
+.trae/
