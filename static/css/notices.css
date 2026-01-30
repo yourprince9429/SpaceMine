@@ -1,155 +1,194 @@
 .wrap {
-    min-height: 100svh;
-    padding-bottom: 64px;
-    box-sizing: border-box;
+  min-height: 100svh;
+  padding: 20px 16px 100px;
+}
+
+.page-header {
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.notices-list {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  overflow-x: auto;
 }
 
 .notices-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 12px 0;
-}
-.notices-table th, .notices-table td {
-    padding: 12px 16px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,.1);
-}
-.notices-table th {
-    font-weight: 600;
-    color: #e6f0ff;
-    font-size: 14px;
-}
-.notices-table td {
-    color: #cfe7ff;
-    font-size: 13px;
-}
-.notices-table td.title {
-    font-weight: 600;
-    color: #e6f0ff;
-}
-.notices-table td.date {
-    color: #a8c4ff;
-    white-space: nowrap;
-}
-.notices-table td.status {
-    width: 80px;
-}
-.notices-table td.actions {
-    width: 120px;
-}
-.no-notices {
-    text-align: center;
-    color: #a8c4ff;
-    padding: 40px 20px;
-    font-size: 14px;
-}
-.empty-state {
-    text-align: center;
-    padding: 24px 0;
-    color: #9ca3af;
-    font-size: 13px;
-}
-.back-btn-fixed {
-    position: fixed;
-    right: 12px;
-    bottom: 14px;
-    z-index: 50;
-}
-.back-btn-fixed a {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: rgba(20,28,46,.9);
-    color: #cfe7ff;
-    border: 1px solid rgba(255,255,255,.16);
-    box-shadow: 0 6px 14px rgba(0,0,0,.35);
-    font-size: 13px;
-    text-decoration: none;
-}
-.back-btn-fixed a svg {
-    width: 16px;
-    height: 16px;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
 }
 
-/* 已读/未读状态样式 */
+.notices-table thead {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notices-table th {
+  padding: 12px 8px;
+  text-align: left;
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.notices-table td {
+  padding: 12px 8px;
+  color: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.notices-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.notices-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.notices-table .title {
+  font-weight: 600;
+  color: #fff;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notices-table .date {
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+}
+
 .status-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .status-badge.read {
-    background-color: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
-    border: 1px solid rgba(34, 197, 94, 0.3);
+  background: rgba(81, 207, 102, 0.2);
+  color: #51cf66;
 }
 
 .status-badge.unread {
-    background-color: rgba(251, 146, 60, 0.2);
-    color: #fb923c;
-    border: 1px solid rgba(251, 146, 60, 0.3);
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
 }
 
-/* 行样式 */
 .notices-table tr.read {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .notices-table tr.unread {
-    opacity: 1;
+  opacity: 1;
 }
 
-/* 按钮样式 */
 .toggle-btn {
-    background-color: rgba(99, 102, 241, 0.2);
-    color: #6366f1;
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  padding: 6px 12px;
+  background: rgba(136, 182, 255, 0.1);
+  color: #88b6ff;
+  border: 1px solid rgba(136, 182, 255, 0.3);
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 .toggle-btn:hover {
-    background-color: rgba(99, 102, 241, 0.3);
-    border-color: rgba(99, 102, 241, 0.5);
+  background: rgba(136, 182, 255, 0.2);
 }
 
-/* 通知样式 */
+.no-notices {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 40px 20px;
+  font-size: 14px}
+
 .notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    color: white;
-    font-size: 14px;
-    z-index: 1000;
-    animation: slideIn 0.3s ease;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
 }
 
 .notification.success {
-    background-color: rgba(34, 197, 94, 0.9);
-    border: 1px solid rgba(34, 197, 94, 0.3);
+  background: rgba(81, 207, 102, 0.9);
+  border: 1px solid rgba(81, 207, 102, 0.3);
 }
 
 .notification.error {
-    background-color: rgba(239, 68, 68, 0.9);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(255, 107, 107, 0.9);
+  border: 1px solid rgba(255, 107, 107, 0.3);
 }
 
 @keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 20px;
+  }
+
+  .notices-list {
+    padding: 16px;
+  }
+
+  .notices-table {
+    font-size: 13px;
+  }
+
+  .notices-table th,
+  .notices-table td {
+    padding: 10px 6px;
+  }
+
+  .notices-table .title {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 18px;
+  }
+
+  .notices-list {
+    padding: 12px;
+  }
+
+  .notices-table {
+    font-size: 12px;
+  }
+
+  .notices-table th,
+  .notices-table td {
+    padding: 8px 4px;
+  }
+
+  .notices-table .title {
+    max-width: 100px;
+  }
 }

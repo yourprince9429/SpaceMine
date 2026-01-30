@@ -10,6 +10,7 @@ from handlers.security import (
     change_pay_password,
     change_login_password,
     bind_email,
+    get_current_user,
 )
 
 user_bp = Blueprint("user", __name__)
@@ -69,3 +70,14 @@ def user_change_password():
 @user_bp.route("/api/user/security/email", methods=["POST"])
 def user_bind_email():
     return bind_email()
+
+
+@user_bp.route("/api/security/verifyStatus")
+def verify_status():
+    """验证用户实名认证状态"""
+    user = get_current_user()
+    if not user:
+        return {"success": False, "verified": False}
+    
+    is_verified = bool(user.real_name and user.id_number)
+    return {"success": True, "verified": is_verified}

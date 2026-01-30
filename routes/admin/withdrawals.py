@@ -1,11 +1,12 @@
+import traceback
 from datetime import datetime
 from decimal import Decimal
 
 from flask import Blueprint, jsonify, request
+from sqlalchemy import or_
 
 from handlers.auth import get_current_user
-from models import User, Withdrawal, db, Notification
-from sqlalchemy import or_
+from models import Notification, User, Withdrawal, db
 
 withdrawal_bp = Blueprint("admin_withdrawals", __name__)
 
@@ -264,9 +265,7 @@ def review_withdrawal(withdrawal_id):
 
     except Exception:
         db.session.rollback()
-        import traceback
-
-        print(f"错误堆栈: {traceback.format_exc()}")
+        traceback.print_exc()
         return jsonify({"success": False, "message": "审核失败"}), 500
 
 
@@ -337,7 +336,5 @@ def get_withdrawal_statistics():
             }
         )
     except Exception:
-        import traceback
-
-        print(f"错误堆栈: {traceback.format_exc()}")
+        traceback.print_exc()
         return jsonify({"success": False, "message": "获取统计数据失败"}), 500

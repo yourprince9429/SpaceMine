@@ -1,10 +1,12 @@
-from flask import request, jsonify, session
-from models.user import User
-from models import db
-from models.file import File
+import base64
+import binascii
 import functools
 import hashlib
-import binascii
+import traceback
+
+from flask import jsonify, request, session
+
+from models import File, User, db
 
 
 def token_required(f):
@@ -58,23 +60,15 @@ def get_user_security():
                 front_file_id = int(user.id_front_image)
                 front_file = File.query.get(front_file_id)
                 if front_file and front_file.file_data:
-                    import base64
-
                     file_extension = (
                         front_file.filename.split(".")[-1].lower()
                         if "." in front_file.filename
                         else "png"
                     )
                     id_front_base64 = f"data:image/{file_extension};base64,{base64.b64encode(front_file.file_data).decode('utf-8')}"
-                    print(
-                        f"Loaded front image for user {user.id}: {len(front_file.file_data)} bytes"
-                    )
                 else:
-                    print(
-                        f"Front image file not found or empty for user {user.id}, file_id: {front_file_id}"
-                    )
+                    pass
             except Exception as e:
-                print(f"Error loading front image for user {user.id}: {e}")
                 pass
 
         if user.id_back_image:
@@ -82,21 +76,15 @@ def get_user_security():
                 back_file_id = int(user.id_back_image)
                 back_file = File.query.get(back_file_id)
                 if back_file and back_file.file_data:
-                    import base64
-
                     file_extension = (
                         back_file.filename.split(".")[-1].lower()
                         if "." in back_file.filename
                         else "png"
                     )
                     id_back_base64 = f"data:image/{file_extension};base64,{base64.b64encode(back_file.file_data).decode('utf-8')}"
-                    print(f"Loaded back image for user {user.id}: {len(back_file.file_data)} bytes")
                 else:
-                    print(
-                        f"Back image file not found or empty for user {user.id}, file_id: {back_file_id}"
-                    )
+                    pass
             except Exception as e:
-                print(f"Error loading back image for user {user.id}: {e}")
                 pass
 
         security_info = {
@@ -248,9 +236,6 @@ def verify_real_name():
 
     except Exception as e:
         db.session.rollback()
-        print(f"Real name verification error: {e}")
-        import traceback
-
         traceback.print_exc()
         return jsonify({"success": False, "message": "实名认证失败"}), 500
 
@@ -420,5 +405,4 @@ def verify_pay_password(user_id, password):
         return user.check_paypwd(password)
 
     except Exception as e:
-        print(f"支付密码验证错误: {e}")
         return False

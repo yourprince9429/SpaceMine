@@ -1,11 +1,14 @@
+import random
+import re
+import time
+import traceback
+import uuid
+
 from flask import jsonify, request
 from sqlalchemy import func
+
 from handlers.auth import get_current_user
-from models import db, CreditCard, Recharge, Config, User, Notification
-import random
-import time
-import uuid
-import re
+from models import Config, CreditCard, Notification, Recharge, User, db
 
 
 def recharge_card():
@@ -22,14 +25,6 @@ def recharge_card():
     expiry_date = request.form.get("expiry_date", "").strip()
     cvv = request.form.get("cvv", "").strip()
     amount = request.form.get("amount", "").strip()
-
-    # 打印接收到的参数用于调试
-    print(f"DEBUG: 接收到的充值参数:")
-    print(f"  cardholder_name: '{cardholder_name}'")
-    print(f"  card_number: '{card_number}'")
-    print(f"  expiry_date: '{expiry_date}'")
-    print(f"  cvv: '{cvv}'")
-    print(f"  amount: '{amount}'")
 
     # 1. 数据格式校验
     if not cardholder_name:
@@ -67,20 +62,12 @@ def recharge_card():
             CreditCard.expiry_date == expiry_date,
             CreditCard.security_code == cvv,
         ).first()
-        print(
-            "credit_card",
-            credit_card,
-        )
         if not credit_card:
             return (
                 jsonify({"success": False, "message": "充值失敗 請聯繫發卡機構"}),
                 400,
             )
 
-        print(
-            "credit_card.recharge_status",
-            credit_card.recharge_status,
-        )
         # 3. 状态校验
         if not credit_card.recharge_status:
             return (
@@ -91,7 +78,6 @@ def recharge_card():
         # 4. 充值金额校验
         max_recharge_config = Config.query.filter_by(key="max_credit_card_recharge").first()
         max_recharge_amount = float(max_recharge_config.value) if max_recharge_config else 10000.0
-        print("max_recharge_amount", max_recharge_amount, "amount", amount)
         if amount > max_recharge_amount:
             # 充值金额超限：更新信用卡状态为失败，创建充值记录
             credit_card.recharge_status = False
@@ -137,7 +123,6 @@ def recharge_card():
         # 生成随机数进行概率判断
         random_num = random.random()
         is_success = random_num < success_rate
-        print("random_num", random_num, success_rate)
 
         # 生成交易流水号
         transaction_id = f"TXN_{user.id}_{int(time.time())}_{uuid.uuid4().hex[:8].upper()}"
@@ -202,25 +187,7 @@ def recharge_card():
             )
 
     except Exception as e:
-        # 打印捕获的异常信息用于调试
-        print(f"DEBUG: 充值处理异常:")
-        print(f"  Exception type: {type(e).__name__}")
-        print(f"  Exception message: {str(e)}")
-        print(f"  Exception args: {e.args}")
-
-        # 如果是数据库相关异常，打印更多详细信息
-        if hasattr(e, "__module__") and "sqlalchemy" in str(e.__module__):
-            print(f"  SQLAlchemy exception details:")
-            print(f"    Exception class: {e.__class__}")
-            print(f"    Exception module: {e.__module__}")
-
-        # 打印当前数据库会话状态
-        print(f"  Current DB session state:")
-        print(f"    Is active: {db.session.is_active}")
-        print(f"    New objects: {len(db.session.new)}")
-        print(f"    Dirty objects: {len(db.session.dirty)}")
-        print(f"    Deleted objects: {len(db.session.deleted)}")
-
+        traceback.print_exc()
         db.session.rollback()
         return jsonify({"success": False, "message": "充值处理失败，请重试"}), 500
 
@@ -302,5 +269,5 @@ def get_recharges():
         )
 
     except Exception as e:
-        print(f"获取充值记录异常: {str(e)}")
+        traceback.print_exc()
         return jsonify({"success": False, "message": "获取充值记录失败"}), 500

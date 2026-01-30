@@ -1,11 +1,8 @@
 (function() {
-  console.log('withdraw.page.js loaded');
 
   // 测试 uiAlertThen 是否可用
   if (typeof uiAlertThen === 'undefined') {
-    console.error('uiAlertThen is not defined');
   } else {
-    console.log('uiAlertThen is available');
   }
 
   // 基本的标签页切换功能
@@ -417,5 +414,4 @@
   loadInfo();
   setFilter(filter);
 
-  console.log('withdraw.page.js initialized');
 })();

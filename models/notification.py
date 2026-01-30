@@ -2,12 +2,15 @@ from .user import db
 
 
 class Notification(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255), nullable=False)
-    content = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    is_read = db.Column(db.Boolean, default=False, nullable=False)
+    __tablename__ = "notification"
+    __table_args__ = {"comment": "通知表"}
+
+    id = db.Column(db.Integer, primary_key=True, comment="通知ID")
+    title = db.Column(db.String(255), nullable=False, comment="通知标题")
+    content = db.Column(db.Text, nullable=False, comment="通知内容")
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, comment="用户ID")
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp(), comment="创建时间")
+    is_read = db.Column(db.Boolean, default=False, nullable=False, comment="是否已读")
 
     user = db.relationship("User", backref="notifications")
 

@@ -3,7 +3,7 @@ import os
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "your-secret-key-here"
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://root:hang113209@127.0.0.1:3306/SpaceMine"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI") or "mysql+pymysql://root:hang113209@127.0.0.1:3306/SpaceMine"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

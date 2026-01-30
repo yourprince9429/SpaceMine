@@ -1,23 +1,26 @@
-.back-button {
-  appearance: none;
-  background: transparent;
-  border: 0;
-  color: #cfe7ff;
-  cursor: pointer;
+.back-btn {
+  position: fixed;
+  right: 12px;
+  bottom: 16px;
+  z-index: 50;
+}
+
+.back-btn a {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(20, 28, 46, 0.9);
+  color: #cfe7ff;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-.back-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.back-button .icon {
-  width: 20px;
-  height: 20px;
-  line-height: 0;
+.back-btn a svg {
+  width: 16px;
+  height: 16px;
 }

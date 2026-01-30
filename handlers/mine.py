@@ -45,7 +45,6 @@ def get_user_mines():
     current_time = datetime.utcnow()
 
     for row in query:
-        print(row)
         is_activated = row.relation_id is not None
         activated_duration = None
         energy_per_second = 0.0

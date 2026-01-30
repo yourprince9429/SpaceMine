@@ -9,11 +9,9 @@
   const btnSubmit = document.getElementById('btnSubmit');
   if (btnSubmit) {
     btnSubmit.addEventListener('click', async () => {
-      // 获取表单数据
       const amount = document.getElementById('amount').value.trim();
       const voucher = document.getElementById('voucher').files[0];
 
-      // 验证数据
       if (!amount) {
         uiAlert('请输入充值金额');
         return;
@@ -24,13 +22,19 @@
         return;
       }
 
+      const confirmed = await uiConfirm(`确认提交充值信息？\n充值金额：${amount} USDT`);
+      if (!confirmed) {
+        return;
+      }
+
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = '提交中...';
+
       try {
-        // 创建FormData
         const formData = new FormData();
         formData.append('amount', amount);
         formData.append('voucher', voucher);
 
-        // 调用后端接口
         const response = await fetch('/api/recharge/usdt', {
           method: 'POST',
           headers: {
@@ -43,19 +47,21 @@
         const result = await response.json();
 
         if (result.success) {
-          uiAlert(result.message, '提示', () => {
-            location.href = '/recharge';
+          uiAlertThen(result.message, '提示', () => {
+            location.reload();
           });
         } else {
-          uiAlert(result.message, '提示', () => {
+          uiAlertThen(result.message, '提示', () => {
             location.reload();
           });
         }
       } catch (error) {
-        console.error('提交失败:', error);
-        uiAlert('提交失败，请重试', '提示', () => {
+        uiAlertThen('提交失败，请重试', '提示', () => {
           location.reload();
         });
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = '提交';
       }
     });
   }

@@ -10,31 +10,26 @@
   </head>
   <body>
     <div class="starfield"></div>
-    <main class="content">
-      <div class="wrap">
-        <section class="section">
-          <div class="card">
-            <div class="hdr">公司簡介</div>
-            <div id="introBody" class="body">我們致力於為用戶提供安全、便捷的數字資產服務。
+    <div class="wrap">
+      <section class="section">
+        <div class="card">
+          <div class="hdr">公司簡介</div>
+          <div id="introBody" class="body">我們致力於為用戶提供安全、便捷的數字資產服務。
 
 公司成立於2020年，團隊由金融與互聯網行業的專業人士組成，核心成員具有多年風控與平台運營經驗。
 
 我們堅持以用戶為中心，持續優化產品體驗，保證資金與數據安全，並以開放透明的方式與用戶溝通，共建可信的生態。
 
 在未來，我們將繼續拓展更多服務場景，為全球用戶提供更高效、更可靠的數字化服務。</div>
-          </div>
-        </section>
-      </div>
-    </main>
-
+        </div>
+      </section>
+    </div>
     <script src="{{ url_for('static', filename='js/back-button.js') }}"></script>
-
-    <div class="back-btn bottom">
-      <a href="/dashboard?tab=user" aria-label="返回我的">
+    <div class="back-btn">
+      <a id="backLink" href="/dashboard?tab=user" aria-label="返回我的">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 18l-6-6 6-6v12z"/></svg>
-        返回我的
+        <span id="backText">返回我的</span>
       </a>
     </div>
   </body>
-
 </html>

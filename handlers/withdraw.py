@@ -1,12 +1,13 @@
+import logging
+import uuid
+from datetime import datetime
+
 from flask import jsonify, request, session
-from models import db, User, Withdrawal, Config
+
 from handlers.auth import get_current_user
 from handlers.security import verify_pay_password
-from datetime import datetime
-import uuid
-import logging
+from models import Config, User, Withdrawal, db
 
-# 配置日志
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 

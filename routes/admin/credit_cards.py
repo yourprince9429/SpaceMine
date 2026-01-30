@@ -1,11 +1,12 @@
-import logging
-import random
 import csv
 import io
+import logging
+import random
+import traceback
 from datetime import datetime, timedelta
 
-from faker import Faker
 import pandas as pd
+from faker import Faker
 
 from flask import Blueprint, jsonify, request, send_file
 
@@ -287,8 +288,6 @@ def generate_credit_cards():
     except Exception as e:
         logger.error(f"生成信用卡时发生错误: {str(e)}")
         logger.error(f"错误类型: {type(e).__name__}")
-        import traceback
-
         logger.error(f"错误堆栈: {traceback.format_exc()}")
         db.session.rollback()
         return jsonify({"success": False, "message": f"生成失败: {str(e)}"}), 500

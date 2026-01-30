@@ -83,8 +83,15 @@
         </section>
 
         <section id="page-game" class="page">
-            <h1>游戏</h1>
-            <p>这里是游戏模块入口与展示。</p>
+            <div class="coming-soon-container">
+                <div class="coming-soon-icon">
+                    <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                    </svg>
+                </div>
+                <h1 class="coming-soon-title">敬请期待</h1>
+                <p class="coming-soon-desc">精彩游戏即将上线，敬请期待！</p>
+            </div>
         </section>
 
         <section id="page-user" class="page active">
@@ -234,6 +241,6 @@
         </button>
     </nav>
 
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    {{ load_js_files('dashboard.js') }}
 </body>
 </html>

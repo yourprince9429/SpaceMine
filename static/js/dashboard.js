@@ -553,10 +553,11 @@ function adjustMineUI() {
     });
     document.querySelectorAll('.mine-card .openMine').forEach(function(b) {
       try {
-        b.style.right = '16px';
-        b.style.bottom = '16px';
+        b.style.position = 'relative';
         b.style.left = 'auto';
         b.style.top = 'auto';
+        b.style.right = 'auto';
+        b.style.bottom = 'auto';
         b.style.transform = 'none';
       } catch (e) {}
     });
@@ -845,7 +846,6 @@ function viewMessage(messageId) {
       }
     })
     .catch(error => {
-      console.error('查看消息失败:', error);
       showAlert('查看消息失败，请稍后重试');
     });
 }
@@ -893,7 +893,6 @@ function markAsRead(messageId) {
       }
     })
     .catch(error => {
-      console.error('标记已读失败:', error);
     });
 }
 

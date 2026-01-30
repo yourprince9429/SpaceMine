@@ -1,4 +1,3 @@
-;
 (function() {
   function S() {
     var t = (localStorage.getItem('X-Session-Token') || '').trim();
@@ -86,17 +85,17 @@
         '');
         var q = document.getElementById('shareQrImg');
         q.onerror = function() {
-          q.src = '/ui/invite/qr?size=200x200';
+          q.src = '/invite/qr?size=200x200';
         };
         q.src = '/ui/invite/qr?size=200x200';
-        m.classList.add('is-open');
+        m.classList.add('active');
       });
     });
   }
   var c = document.getElementById('shareClose');
   if (c) {
     c.addEventListener('click', function() {
-      document.getElementById('shareModal').classList.remove('is-open');
+      document.getElementById('shareModal').classList.remove('active');
     });
   }
   S();
@@ -104,11 +103,9 @@
     function setupBackButton() {
       var src = new URLSearchParams(window.location.search).get('src') || '';
       src = src.trim();
-      console.log('Invite page src:', src);
       var backLink = document.getElementById('backLink');
       var backText = document.getElementById('backText');
       if (!backLink || !backText) {
-        console.log('Back elements not found, retrying...');
         setTimeout(setupBackButton, 100);
         return;
       }
@@ -116,12 +113,10 @@
         backLink.href = '/dashboard#user';
         backLink.setAttribute('aria-label', '返回我的');
         backText.textContent = '返回我的';
-        console.log('Set to 返回我的');
       } else {
         backLink.href = '/dashboard';
         backLink.setAttribute('aria-label', '返回首页');
         backText.textContent = '返回首页';
-        console.log('Set to 返回首页');
       }
     }
     if (document.readyState === 'loading') {

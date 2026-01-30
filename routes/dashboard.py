@@ -1,18 +1,12 @@
-from flask import (
-    Blueprint,
-    render_template,
-    session,
-    redirect,
-    url_for,
-    request,
-    jsonify,
-)
-from models import Config, User, Recharge, File, db, Role, UserRoleRelation
-from handlers.auth import get_current_user
-from handlers.recharge import recharge_card
-import uuid
 import os
 import time
+import uuid
+
+from flask import Blueprint, jsonify, redirect, render_template, request, session, url_for
+
+from handlers.auth import get_current_user
+from handlers.recharge import recharge_card
+from models import Config, File, Recharge, Role, User, UserRoleRelation, db
 
 dashboard_bp = Blueprint("dashboard", __name__)
 

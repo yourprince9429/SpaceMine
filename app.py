@@ -18,6 +18,7 @@ from routes.recharge import recharge_bp
 from routes.ui import ui_bp
 from routes.user import user_bp
 from routes.withdraw import withdraw_bp
+from routes.encoded_js import encoded_js_bp, register_template_helpers
 
 
 def create_app(config_name=None):
@@ -29,6 +30,8 @@ def create_app(config_name=None):
     db.init_app(app)
     migrate = Migrate(app, db)
     bcrypt = Bcrypt(app)
+
+    register_template_helpers(app)
 
     return app
 
@@ -60,6 +63,10 @@ def after_request(response):
         "Access-Control-Allow-Headers", "Content-Type,Authorization,X-Session-Token"
     )
     response.headers.add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
+    
+    if response.content_type and 'text/html' in response.content_type:
+        response.headers.add("Content-Type", "text/html; charset=utf-8")
+    
     return response
 
 
@@ -73,23 +80,30 @@ app.register_blueprint(message_bp)
 app.register_blueprint(recharge_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(withdraw_bp)
+app.register_blueprint(encoded_js_bp)
 
-with app.app_context():
-    scheduler = create_scheduler(app)
 
-try:
-    scheduler.start()
-    print("定时任务调度器已启动")
-except Exception as e:
-    print(f"启动定时任务调度器失败: {str(e)}")
+@app.route("/health")
+def health_check():
+    """健康检查端点"""
+    return {"status": "ok", "message": "Service is healthy"}, 200
 
-app.extensions = getattr(app, "extensions", {})
-app.extensions["scheduler"] = scheduler
 
 
 if __name__ == "__main__":
     try:
+        with app.app_context():
+            scheduler = create_scheduler(app)
+        
+        try:
+            scheduler.start()
+        except Exception as e:
+            pass
+        
+        app.extensions = getattr(app, "extensions", {})
+        app.extensions["scheduler"] = scheduler
+        
         app.run("0.0.0.0", debug=True, port=5001)
     finally:
-        scheduler.shutdown(wait=False)
-        print("调度器已关闭")
+        if 'scheduler' in locals():
+            scheduler.shutdown(wait=False)

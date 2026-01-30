@@ -1,19 +1,633 @@
-.mine-banner{position:relative;margin:8px}
-.mine-banner>img{width:100%;display:block;border-radius:12px;object-fit:cover}
-.mine-stat{position:absolute;left:12px;top:12px;display:grid;gap:8px;color:#e6f0ff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
-.mine-stat img{width:18px;height:18px}
+.carousel {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto 4px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+}
 
-.mine-top{position:relative;margin:8px}
-.mine-top>img{width:100%;display:block;border-radius:12px;object-fit:cover}
-.mine-open-btn{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);padding:8px 16px;border-radius:12px;background:url('/ui/static/img/btbg.png') center/cover no-repeat,linear-gradient(90deg,#88b6ff,#5aa0ff);color:#fff;font-weight:700;box-shadow:0 6px 12px rgba(0,0,0,.25);cursor:pointer}
+.slides {
+  position: relative;
+  aspect-ratio: 16 / 12;
+  height: auto;
+}
 
-.mine-info{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;margin:8px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#e6f0ff}
-.mine-info .metrics{display:grid;gap:8px}
-.mine-info .row{display:flex;align-items:center;gap:8px}
-.mine-info img{width:18px;height:18px}
-.mine-info .rule-btn{appearance:none;border:0;border-radius:10px;padding:8px 12px;background:#ff7b2e;color:#fff;box-shadow:0 4px 10px rgba(255,123,46,.35);cursor:pointer}
+.slide {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(28,38,58,.8), rgba(14,18,28,.8));
+  background-size: cover;
+  background-position: top center;
+  opacity: 0;
+  transition: opacity .6s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.mine-list{display:grid;gap:8px;margin:8px}
-.mine-card{position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.12)}
-.mine-card>img{width:100%;display:block}
-.mine-overlay{position:absolute;inset:0;padding:10px 12px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;color:#e6f0ff;background:linear-gradient(to top, rgba(27,38,70,.65), rgba(27,38,70,.15));text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.slide.current {
+  opacity: 1;
+}
+
+.slide .placeholder {
+  color: #cfe7ff;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 6px rgba(0,0,0,.6);
+}
+
+.dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.dot.active {
+  background: #fff;
+}
+
+.action-cards {
+  display: grid;
+  column-gap: 5px;
+  row-gap: 6px;
+  width: min(96vw, 720px);
+  margin: 0 auto;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  justify-items: stretch;
+  box-sizing: border-box;
+}
+
+.action-card {
+  position: relative;
+  display: block;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.action-card:active {
+  transform: scale(.98);
+  box-shadow: 0 6px 16px rgba(80,140,255,.28);
+}
+
+.action-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: transparent;
+  border: 0;
+}
+
+.action-card.invite {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  aspect-ratio: 1 / 2;
+}
+
+.action-card.games {
+  grid-column: 2;
+  grid-row: 1;
+  aspect-ratio: 1 / 1;
+}
+
+.action-card.recharge {
+  grid-column: 2;
+  grid-row: 2;
+  aspect-ratio: 1 / 1;
+}
+
+.action-card.games img {
+  object-position: bottom center;
+}
+
+.action-card.recharge img {
+  object-position: top center;
+}
+
+.action-card .label {
+  display: none;
+}
+
+.promo-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: min(96vw, 720px);
+  margin: 6px auto 0;
+}
+
+.promo-card {
+  position: relative;
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.promo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.promo-label {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 10px;
+  color: #e6f0ff;
+  font-size: 14px;
+  line-height: 1.4;
+  background: rgba(10,16,28,.35);
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.mine-banner {
+  position: relative;
+  margin: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.mine-banner img {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+
+.mine-stat {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  display: grid;
+  gap: 8px;
+  color: #e6f0ff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
+  z-index: 1;
+}
+
+.mine-stat img {
+  width: 18px;
+  height: 18px;
+}
+
+.mine-info {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #e6f0ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mine-info .metrics {
+  display: grid;
+  gap: 10px;
+}
+
+.mine-info .row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.mine-info img {
+  width: 20px;
+  height: 20px;
+}
+
+.rule-btn {
+  appearance: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: #ff7b2e;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(255, 123, 46, 0.35);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.rule-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(255, 123, 46, 0.45);
+}
+
+.rule-btn:active {
+  transform: translateY(0);
+}
+
+.mine-list {
+  display: grid;
+  gap: 8px;
+  margin: 8px;
+}
+
+.mine-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.mine-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.mine-card img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.mine-card.active {
+  border-color: rgba(136, 182, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(136, 182, 255, 0.25);
+}
+
+.mine-card.active:hover {
+  box-shadow: 0 6px 16px rgba(136, 182, 255, 0.35);
+}
+
+.mine-overlay {
+  position: absolute;
+  inset: 0;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 8px;
+  color: #e6f0ff;
+  background: linear-gradient(to top, rgba(27,38,70,.75), rgba(27,38,70,.25), transparent);
+  text-shadow: 0 1px 3px rgba(0,0,0,.5);
+  align-items: center;
+}
+
+.mine-overlay > div {
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.mine-overlay > div:first-child {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.openMine {
+  appearance: none;
+  border: 0;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: url('/static/img/btbg.png') center/cover no-repeat, linear-gradient(90deg, #88b6ff, #5aa0ff);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, .25);
+  cursor: pointer;
+  text-align: center;
+  transition: transform .12s ease, box-shadow .12s ease;
+  width: auto;
+  min-width: 80px;
+}
+
+.openMine:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 16px rgba(80, 140, 255, .35);
+}
+
+.openMine:active {
+  transform: scale(.98);
+}
+
+.user-header {
+  width: min(90vw, 720px);
+  margin: 8px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: grid;
+  place-items: center;
+  color: #e6f0ff;
+}
+
+.avatar svg {
+  color: #e6f0ff;
+}
+
+.info {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+}
+
+.user-name-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.status-badge {
+  font-size: 12px;
+  padding: 0 11px 2px 9px;
+  height: 22px;
+  line-height: 22px;
+  border-radius: 11px;
+  background: linear-gradient(90deg, rgba(120,170,255,.36), rgba(120,170,255,.22));
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+}
+
+.vip-icon {
+  color: #ffd46b;
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.user-id {
+  font-size: 13px;
+  color: #a8c4ff;
+}
+
+.settings-btn {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: #cfe7ff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+
+.invite-card .metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.invite-card .metric {
+  text-align: left;
+}
+
+.invite-card .metric .num {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.invite-card .metric .label {
+  font-size: 12px;
+  color: #a8c4ff;
+}
+
+.invite-card .primary {
+  appearance: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #fff;
+  background: linear-gradient(90deg, #88b6ff, #5aa0ff);
+  box-shadow: 0 6px 14px rgba(80,140,255,.35);
+  cursor: pointer;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.quick-grid .item {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  color: #e6f0ff;
+  text-decoration: none;
+}
+
+.quick-grid .item .icon {
+  line-height: 0;
+  color: #88b6ff;
+}
+
+.quick-grid .item .label {
+  font-size: 14px;
+}
+
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: rgba(10, 16, 28, 0.75);
+  backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tabbar button {
+  appearance: none;
+  background: transparent;
+  color: #cfe7ff;
+  border: 0;
+  font-size: 20px;
+  letter-spacing: 0.4px;
+  padding: 4px 6px;
+  border-radius: 10px;
+  position: relative;
+  transition: background-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+  display: grid;
+  grid-auto-flow: row;
+  justify-items: center;
+  align-content: center;
+  gap: 2px;
+}
+
+.tabbar button.active {
+  color: #ffffff;
+  font-weight: 600;
+  background: rgba(120, 170, 255, 0.18);
+  box-shadow: 0 4px 12px rgba(80,140,255,.35), inset 0 0 0 1px rgba(255,255,255,.15);
+  transform: translateY(-2px);
+}
+
+.tabbar button.active::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 4px;
+  height: 3px;
+  background: linear-gradient(90deg, #88b6ff, #ffffff);
+  border-radius: 3px;
+}
+
+.tabbar .icon {
+  line-height: 0;
+  color: #88b6ff;
+}
+
+.tabbar button.active .icon {
+  color: #ffffff;
+}
+
+.tabbar .label {
+  font-size: 16px;
+}
+
+@media (max-width: 480px) {
+  .carousel {
+    max-width: 96vw;
+  }
+
+  .carousel .slides {
+    aspect-ratio: 16 / 12;
+  }
+
+  .mine-banner {
+    margin: 6px;
+  }
+
+  .mine-info {
+    margin: 6px;
+    padding: 10px 12px;
+  }
+
+  .mine-info .row {
+    font-size: 13px;
+  }
+
+  .mine-info img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .rule-btn {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .mine-list {
+    margin: 6px;
+    gap: 6px;
+  }
+
+  .mine-overlay {
+    padding: 10px 12px;
+    gap: 6px;
+  }
+
+  .mine-overlay > div {
+    font-size: 13px;
+  }
+
+  .mine-overlay > div:first-child {
+    font-size: 15px;
+  }
+
+  .openMine {
+    padding: 6px 14px;
+    font-size: 14px;
+  }
+
+  .action-cards {
+    width: 96vw;
+    column-gap: 5px;
+    row-gap: 6px;
+    grid-template-columns: 1fr 1fr;
+    margin: 0 auto;
+  }
+
+  .action-card.invite {
+    aspect-ratio: 1 / 2;
+  }
+
+  .action-card.games,
+  .action-card.recharge {
+    aspect-ratio: 1 / 1;
+  }
+
+  .promo-cards {
+    width: 96vw;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .action-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .action-card.invite,
+  .action-card.games,
+  .action-card.recharge {
+    grid-column: auto;
+    grid-row: auto;
+    aspect-ratio: 1 / 1;
+  }
+}

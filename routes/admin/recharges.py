@@ -1,8 +1,10 @@
+import traceback
+
 from flask import Blueprint, jsonify, request, Response
+from sqlalchemy import or_
 
 from handlers.auth import get_current_user
-from models import File, Recharge, db, Notification
-from sqlalchemy import or_
+from models import File, Notification, Recharge, db
 
 recharge_bp = Blueprint("admin_recharges", __name__)
 
@@ -32,50 +34,54 @@ def get_recharges():
     status = request.args.get("status")
     search = request.args.get("search")
 
-    query = Recharge.query.filter_by(method="usdt")
+    try:
+        query = Recharge.query.filter_by(method="usdt")
 
-    if status:
-        query = query.filter_by(status=status)
+        if status:
+            query = query.filter_by(status=status)
 
-    if search:
-        from models import User
+        if search:
+            from models import User
 
-        query = query.join(User).filter(
-            or_(User.username.like(f"%{search}%"), Recharge.order_number.like(f"%{search}%"))
+            query = query.join(User, Recharge.user_id == User.id).filter(
+                or_(User.username.like(f"%{search}%"), Recharge.order_number.like(f"%{search}%"))
+            )
+
+        recharges_query = query.order_by(Recharge.created_at.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
         )
 
-    recharges_query = query.order_by(Recharge.created_at.desc()).paginate(
-        page=page, per_page=per_page, error_out=False
-    )
+        recharges_data = []
+        for recharge in recharges_query.items:
+            reviewer_name = recharge.reviewer.username if recharge.reviewer else None
+            recharges_data.append(
+                {
+                    "id": recharge.id,
+                    "user_id": recharge.user_id,
+                    "username": recharge.user.username,
+                    "amount": float(recharge.amount),
+                    "status": recharge.status,
+                    "order_number": recharge.order_number,
+                    "created_at": recharge.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                    "reviewer_name": reviewer_name,
+                }
+            )
 
-    recharges_data = []
-    for recharge in recharges_query.items:
-        reviewer_name = recharge.reviewer.username if recharge.reviewer else None
-        recharges_data.append(
+        return jsonify(
             {
-                "id": recharge.id,
-                "user_id": recharge.user_id,
-                "username": recharge.user.username,
-                "amount": float(recharge.amount),
-                "status": recharge.status,
-                "order_number": recharge.order_number,
-                "created_at": recharge.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-                "reviewer_name": reviewer_name,
+                "success": True,
+                "recharges": recharges_data,
+                "pagination": {
+                    "page": page,
+                    "per_page": per_page,
+                    "total": recharges_query.total,
+                    "pages": recharges_query.pages,
+                },
             }
         )
-
-    return jsonify(
-        {
-            "success": True,
-            "recharges": recharges_data,
-            "pagination": {
-                "page": page,
-                "per_page": per_page,
-                "total": recharges_query.total,
-                "pages": recharges_query.pages,
-            },
-        }
-    )
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"success": False, "message": f"服务器错误: {str(e)}"}), 500
 
 
 @recharge_bp.route("/api/admin/recharges/<int:recharge_id>")
@@ -155,18 +161,14 @@ def get_recharge_screenshot(recharge_id):
 @recharge_bp.route("/api/admin/recharges/<int:recharge_id>/review", methods=["PUT"])
 def review_recharge(recharge_id):
     """审核充值"""
-    print(f"[DEBUG] 开始审核充值，recharge_id: {recharge_id}")
-
     user = get_current_user()
     if not user:
-        print(f"[DEBUG] 用户未登录")
         return jsonify({"success": False, "message": "未登录"}), 401
 
     from models import Role, UserRoleRelation
 
     admin_role = Role.query.filter_by(name="admin").first()
     if not admin_role:
-        print(f"[DEBUG] 管理员角色未配置")
         return jsonify({"success": False, "message": "管理员角色未配置"}), 500
 
     user_role_relation = UserRoleRelation.query.filter_by(
@@ -174,41 +176,26 @@ def review_recharge(recharge_id):
     ).first()
 
     if not user_role_relation:
-        print(f"[DEBUG] 权限不足，user_id: {user.id}")
         return jsonify({"success": False, "message": "权限不足"}), 403
 
-    print(f"[DEBUG] 查询充值记录，recharge_id: {recharge_id}")
     recharge = Recharge.query.get_or_404(recharge_id)
-    print(f"[DEBUG] 找到充值记录，status: {recharge.status}, amount: {recharge.amount}")
 
     if recharge.status in ["completed", "failed"]:
-        print(f"[DEBUG] 充值记录已处理，status: {recharge.status}")
         return jsonify({"success": False, "message": "该充值记录已处理"}), 400
 
-    print(f"[DEBUG] 获取请求数据")
     data = request.get_json()
-    print(f"[DEBUG] 请求数据: {data}")
     status = data.get("status")
-    print(f"[DEBUG] 审核状态: {status}")
 
     if status not in ["completed", "failed"]:
-        print(f"[DEBUG] 无效的审核结果: {status}")
         return jsonify({"success": False, "message": "无效的审核结果"}), 400
 
     try:
-        print(f"[DEBUG] 开始更新充值状态")
         recharge.status = status
         recharge.reviewer_id = user.id
 
         if status == "completed":
-            print(
-                f"[DEBUG] 更新用户余额，当前余额: {recharge.user.balance}, 增加: {recharge.amount}"
-            )
             recharge.user.balance += recharge.amount
-            print(f"[DEBUG] 更新后余额: {recharge.user.balance}")
 
-            # 添加充值成功通知
-            print(f"[DEBUG] 创建充值成功通知")
             notification = Notification(
                 title="充值成功",
                 content=f"訂單號：{recharge.order_number}\n金額：{recharge.amount:.2f}\n結果：充值成功到賬 {recharge.amount:.2f}\n方式：USDT充值",
@@ -216,8 +203,6 @@ def review_recharge(recharge_id):
             )
             db.session.add(notification)
         else:
-            # 添加充值失败通知
-            print(f"[DEBUG] 创建充值失败通知")
             notification = Notification(
                 title="充值審核不通過",
                 content=f"訂單號：{recharge.order_number}\n金額：{recharge.amount:.2f}\n結果：充值失敗 請聯繫發卡機構\n方式：USDT充值",
@@ -225,14 +210,9 @@ def review_recharge(recharge_id):
             )
             db.session.add(notification)
 
-        print(f"[DEBUG] 提交数据库事务")
         db.session.commit()
-        print(f"[DEBUG] 审核完成")
         return jsonify({"success": True, "message": "审核完成"})
     except Exception as e:
-        print(f"[DEBUG] 审核失败，错误: {e}")
-        import traceback
-
         traceback.print_exc()
         db.session.rollback()
         return jsonify({"success": False, "message": "审核失败"}), 500

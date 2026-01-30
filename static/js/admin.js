@@ -52,6 +52,10 @@ function loadUsers() {
         const tr = document.createElement('tr');
         const statusClass = user.status === 'active' ? 'status-active' : 'status-inactive';
         const statusText = user.status === 'active' ? '正常' : '停用';
+        const statusBtnClass = user.status === 'active' ? 'btn-danger' : 'btn-success';
+        const statusBtnText = user.status === 'active' ? '停用' : '启用';
+        const adminBtnClass = user.is_admin ? 'btn-warning' : 'btn-info';
+        const adminBtnText = user.is_admin ? '移除管理员' : '设为管理员';
 
         tr.innerHTML = `
                     <td data-label="用户ID">${user.id}</td>
@@ -62,8 +66,8 @@ function loadUsers() {
                     <td data-label="角色">${user.roles.join(', ')}</td>
                     <td data-label="注册时间">${user.created_at}</td>
                     <td data-label="操作">
-                        <button class="btn btn-warning" onclick="toggleUserStatus(${user.id}, '${user.status}')">${user.status === 'active' ? '停用' : '启用'}</button>
-                        <button class="btn btn-primary" onclick="toggleAdminRole(${user.id}, ${user.is_admin})">${user.is_admin ? '移除管理员' : '设为管理员'}</button>
+                        <button class="btn ${statusBtnClass}" onclick="toggleUserStatus(${user.id}, '${user.status}')">${statusBtnText}</button>
+                        <button class="btn ${adminBtnClass}" onclick="toggleAdminRole(${user.id}, ${user.is_admin})">${adminBtnText}</button>
                     </td>
                 `;
         tbody.appendChild(tr);
@@ -91,10 +95,22 @@ function loadRecharges() {
   }
 
   fetch(url)
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        return response.text().then(text => {
+          throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+        });
+      }
+      return response.json();
+    })
     .then(data => {
       const tbody = document.querySelector('#rechargeTable tbody');
       tbody.innerHTML = '';
+
+      if (!data.recharges || data.recharges.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px; color: rgba(255,255,255,0.5);">暂无数据</td></tr>';
+        return;
+      }
 
       data.recharges.forEach(recharge => {
         const tr = document.createElement('tr');
@@ -113,13 +129,16 @@ function loadRecharges() {
                     <td data-label="创建时间">${recharge.created_at}</td>
                     <td data-label="审核人">${recharge.reviewer_name || '-'}</td>
                     <td data-label="操作">
-                        ${recharge.status === 'pending' ? `<button class="btn btn-primary" onclick="viewRechargeDetail(${recharge.id})">审核</button>` : '已处理'}
+                        ${recharge.status === 'pending' ? `<button class="btn btn-view" onclick="viewRechargeDetail(${recharge.id})">审核</button>` : '已处理'}
                     </td>
                 `;
         tbody.appendChild(tr);
       });
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+      const tbody = document.querySelector('#rechargeTable tbody');
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px; color: #ff6b6b;">加载失败：' + error.message + '</td></tr>';
+    });
 }
 
 function loadWithdrawals() {
@@ -169,13 +188,14 @@ function loadWithdrawals() {
                     <td data-label="创建时间">${withdrawal.created_at}</td>
                     <td data-label="审核人">${withdrawal.reviewer_name || '-'}</td>
                     <td data-label="操作">
-                        ${withdrawal.status === 'pending' ? `<button class="btn btn-primary" onclick="viewWithdrawalDetail(${withdrawal.id})">审核</button>` : '已处理'}
+                        ${withdrawal.status === 'pending' ? `<button class="btn btn-view" onclick="viewWithdrawalDetail(${withdrawal.id})">审核</button>` : '已处理'}
                     </td>
                 `;
         tbody.appendChild(tr);
       });
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {
+    });
 }
 
 function loadWithdrawalStats() {
@@ -249,7 +269,7 @@ function loadConfigs() {
                     <td data-label="参数值">${displayValue}</td>
                     <td data-label="设置人">${config.username || '系统'}</td>
                     <td data-label="标题" style="display:none;">${config.description || '无'}</td>
-                    <td data-label="操作"><button class="btn btn-warning" onclick="editConfig('${config.key}', '${config.value}')">修改</button></td>
+                    <td data-label="操作"><button class="btn btn-edit" onclick="editConfig('${config.key}', '${config.value}')">修改</button></td>
                 `;
         tbody.appendChild(tr);
       });
@@ -268,14 +288,16 @@ function loadSupportEmails() {
         const tr = document.createElement('tr');
         const statusClass = email.is_active ? 'status-active' : 'status-inactive';
         const statusText = email.is_active ? '启用' : '停用';
+        const statusBtnClass = email.is_active ? 'btn-danger' : 'btn-success';
+        const statusBtnText = email.is_active ? '停用' : '启用';
 
         tr.innerHTML = `
                     <td data-label="客服名称">${email.name || '未设置'}</td>
                     <td data-label="邮箱">${email.email}</td>
                     <td data-label="状态"><span class="status-badge ${statusClass}">${statusText}</span></td>
                     <td data-label="操作">
-                        <button class="btn btn-warning" onclick="toggleSupportEmail(${email.id})">${email.is_active ? '停用' : '启用'}</button>
-                        <button class="btn btn-primary" onclick="editSupportEmail(${email.id}, '${email.email}', '${email.name || ''}')">修改</button>
+                        <button class="btn ${statusBtnClass}" onclick="toggleSupportEmail(${email.id})">${statusBtnText}</button>
+                        <button class="btn btn-edit" onclick="editSupportEmail(${email.id}, '${email.email}', '${email.name || ''}')">修改</button>
                     </td>
                 `;
         tbody.appendChild(tr);
@@ -337,7 +359,6 @@ function toggleUserStatus(userId, currentStatus) {
           }
         })
         .catch(error => {
-          console.error('Error:', error);
           showResultModal('操作失败', '网络错误，请重试', false);
         });
     }
@@ -371,7 +392,6 @@ function toggleAdminRole(userId, is_admin) {
           }
         })
         .catch(error => {
-          console.error('Error:', error);
           showResultModal('操作失败', '网络错误，请重试', false);
         });
     }
@@ -399,14 +419,13 @@ function viewRechargeDetail(rechargeId) {
                 <div style="margin-top: 20px;">
                     <button class="btn btn-success" onclick="reviewRecharge(${data.recharge.id}, 'completed')">通过</button>
                     <button class="btn btn-danger" onclick="reviewRecharge(${data.recharge.id}, 'failed')">拒绝</button>
-                    <button class="btn" onclick="closeModal()">关闭</button>
+                    <button class="btn btn-close" onclick="closeModal()">关闭</button>
                 </div>
             `;
 
       document.getElementById('detailModal').classList.add('is-open');
     })
     .catch(error => {
-      console.error('Error:', error);
       showResultModal('加载失败', '加载详情失败，请重试', false);
     });
 }
@@ -452,7 +471,7 @@ function viewWithdrawalDetail(withdrawalId) {
                     <div class="btn-group">
                         <button class="btn btn-success" onclick="submitWithdrawalReviewWithNotes(${withdrawal.id}, 'completed')">通过</button>
                         <button class="btn btn-danger" onclick="submitWithdrawalReviewWithNotes(${withdrawal.id}, 'failed')">拒绝</button>
-                        <button class="btn" onclick="closeModal()">关闭</button>
+                        <button class="btn btn-close" onclick="closeModal()">关闭</button>
                     </div>
                 </div>
             `;
@@ -460,7 +479,6 @@ function viewWithdrawalDetail(withdrawalId) {
       document.getElementById('detailModal').classList.add('is-open');
     })
     .catch(error => {
-      console.error('Error:', error);
       showResultModal('加载失败', '加载详情失败，请重试', false);
     });
 }
@@ -490,7 +508,6 @@ function reviewRecharge(rechargeId, status) {
           }
         })
         .catch(error => {
-          console.error('Error:', error);
           showResultModal('审核失败', '网络错误，请重试', false);
         });
     }
@@ -541,7 +558,6 @@ function submitWithdrawalReview(withdrawalId, status, notes) {
       }
     })
     .catch(error => {
-      console.error('Error:', error);
       showResultModal('审核失败', '网络错误，请重试', false);
     });
 }
@@ -589,7 +605,6 @@ function editConfig(key, value) {
             }
           })
           .catch(error => {
-            console.error('Error:', error);
             showResultModal('操作失败', '网络错误，请重试', false);
           });
       }
@@ -623,7 +638,6 @@ function editSupportEmail(id, email, name) {
           }
         })
         .catch(error => {
-          console.error('Error:', error);
           showResultModal('操作失败', '网络错误，请重试', false);
         });
     }
@@ -821,7 +835,7 @@ function loadCreditCardGenerations() {
                     <td data-label="卡片数量">${generation.card_count}</td>
                     <td data-label="备注">${generation.notes || '无'}</td>
                     <td data-label="操作">
-                        <button class="btn btn-primary" onclick="viewCreditCardGenerationDetail(${generation.id})">查看</button>
+                        <button class="btn btn-view" onclick="viewCreditCardGenerationDetail(${generation.id})">查看</button>
                     </td>
                 `;
         tbody.appendChild(tr);
@@ -1139,8 +1153,8 @@ function viewCreditCardGenerationDetail(generationId) {
                         <p><strong>备注:</strong> ${generation.notes || '无'}</p>
                     </div>
                     <div class="export-buttons" style="margin: 20px 0;">
-                        <button class="btn btn-success" onclick="exportCreditCards(${generationId}, 'csv')">导出CSV</button>
-                        <button class="btn btn-success" onclick="exportCreditCards(${generationId}, 'excel')">导出Excel</button>
+                        <button class="btn btn-export" onclick="exportCreditCards(${generationId}, 'csv')">导出CSV</button>
+                        <button class="btn btn-export" onclick="exportCreditCards(${generationId}, 'excel')">导出Excel</button>
                     </div>
                     <div class="table-container">
                         <table class="admin-table">

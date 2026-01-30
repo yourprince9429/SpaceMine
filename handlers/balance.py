@@ -1,5 +1,6 @@
-from flask import jsonify
 from datetime import datetime
+
+from flask import jsonify
 
 from handlers.auth import get_current_user
 from handlers.scheduler import check_and_settle_user_mines

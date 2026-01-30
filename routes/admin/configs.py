@@ -86,7 +86,7 @@ def update_config(key):
             with current_app.app_context():
                 new_scheduler = update_scheduler_interval(current_app)
                 if new_scheduler:
-                    print(f"[DEBUG] 调度器更新成功")
+                    pass
 
         return jsonify({"success": True, "message": "配置更新成功"})
     except Exception:

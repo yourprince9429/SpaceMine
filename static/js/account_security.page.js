@@ -20,7 +20,6 @@
         updateUIStatus(data);
       }
     } catch (error) {
-      console.error('获取用户状态失败:', error);
     }
   }
 
@@ -301,6 +300,74 @@
     return keypad;
   }
 
+  // 显示软键盘
+  function showKeypad(title, onDone) {
+    let ov = document.createElement('div');
+    ov.className = 'keypad-mask';
+    ov.innerHTML = (
+      '<div class="keypad">' +
+      '<div class="kp-title">' + (title || '') + '</div>' +
+      '<div class="kp-display">' +
+      '<div class="kp-dot"></div><div class="kp-dot"></div><div class="kp-dot"></div>' +
+      '<div class="kp-dot"></div><div class="kp-dot"></div><div class="kp-dot"></div>' +
+      '</div>' +
+      '<div class="kp-grid">' +
+      '<button class="kp-key">1</button><button class="kp-key">2</button><button class="kp-key">3</button>' +
+      '<button class="kp-key">4</button><button class="kp-key">5</button><button class="kp-key">6</button>' +
+      '<button class="kp-key">7</button><button class="kp-key">8</button><button class="kp-key">9</button>' +
+      '<button class="kp-key">⌫</button><button class="kp-key">0</button><button class="kp-key">✕</button>' +
+      '</div>' +
+      '<div class="kp-actions"><button class="kp-key">取消</button><button class="kp-key kp-primary">确认</button></div>' +
+      '</div>'
+    );
+    document.body.appendChild(ov);
+    ov.addEventListener('click', (e) => {
+      if (e.target === ov) {
+        ov.remove();
+      }
+    });
+
+    let val = '';
+    const dots = ov.querySelectorAll('.kp-dot');
+
+    function updateDots() {
+      dots.forEach((d, i) => d.classList.toggle('filled', i < val.length));
+    }
+
+    ov.querySelectorAll('.kp-grid .kp-key').forEach(btn => btn.addEventListener('click', () => {
+      const t = btn.textContent;
+      if (t === '⌫') {
+        val = val.slice(0, -1);
+        updateDots();
+        return;
+      }
+      if (t === '✕') {
+        val = '';
+        updateDots();
+        return;
+      }
+      if (val.length < 6 && /\d/.test(t)) {
+        val += t;
+        updateDots();
+      }
+    }));
+
+    const act = ov.querySelectorAll('.kp-actions .kp-key');
+    act[0].addEventListener('click', () => {
+      ov.remove();
+    });
+    act[1].addEventListener('click', () => {
+      if (val.length !== 6) {
+        alert('请输入6位数字密码');
+        return;
+      }
+      try {
+        onDone && onDone(val);
+      } catch (e) {}
+      ov.remove();
+    });
+  }
+
   // 交易密码
   btnPayPwd.addEventListener('click', async function() {
     // 先获取当前用户状态，检查是否已设置交易密码
@@ -318,8 +385,8 @@
         // 已设置交易密码，显示修改界面（不需要输入当前密码）
         content = `
                     <div style="display: grid; gap: 12px;">
-                        <input type="password" class="input" placeholder="請輸入新交易密碼" id="newPayPwdInput">
-                        <input type="password" class="input" placeholder="請確認新交易密碼" id="confirmNewPayPwdInput">
+                        <input type="password" class="input" placeholder="請輸入新交易密碼" id="newPayPwdInput" readonly style="cursor: pointer;">
+                        <input type="password" class="input" placeholder="請確認新交易密碼" id="confirmNewPayPwdInput" readonly style="cursor: pointer;">
                         <div class="actions">
                             <button class="btn secondary" onclick="this.closest('.modal-mask').remove()">取消</button>
                             <button class="btn primary" id="confirmPayPwd">確認修改</button>
@@ -332,8 +399,8 @@
         // 未设置交易密码，显示设置界面
         content = `
                     <div style="display: grid; gap: 12px;">
-                        <input type="password" class="input" placeholder="請輸入交易密碼" id="payPwdInput">
-                        <input type="password" class="input" placeholder="請確認交易密碼" id="confirmPayPwdInput">
+                        <input type="password" class="input" placeholder="請輸入交易密碼" id="payPwdInput" readonly style="cursor: pointer;">
+                        <input type="password" class="input" placeholder="請確認交易密碼" id="confirmPayPwdInput" readonly style="cursor: pointer;">
                         <div class="actions">
                             <button class="btn secondary" onclick="this.closest('.modal-mask').remove()">取消</button>
                             <button class="btn primary" id="confirmPayPwd">確認</button>
@@ -345,6 +412,44 @@
       }
 
       const modal = createModal('交易密碼', content);
+
+      // 为密码输入框添加软键盘
+      const newPayPwdInput = document.getElementById('newPayPwdInput');
+      const confirmNewPayPwdInput = document.getElementById('confirmNewPayPwdInput');
+      const payPwdInput = document.getElementById('payPwdInput');
+      const confirmPayPwdInput = document.getElementById('confirmPayPwdInput');
+
+      if (newPayPwdInput) {
+        newPayPwdInput.addEventListener('click', () => {
+          showKeypad('請輸入新交易密碼', v => {
+            newPayPwdInput.value = v;
+          });
+        });
+      }
+
+      if (confirmNewPayPwdInput) {
+        confirmNewPayPwdInput.addEventListener('click', () => {
+          showKeypad('請確認新交易密碼', v => {
+            confirmNewPayPwdInput.value = v;
+          });
+        });
+      }
+
+      if (payPwdInput) {
+        payPwdInput.addEventListener('click', () => {
+          showKeypad('請輸入交易密碼', v => {
+            payPwdInput.value = v;
+          });
+        });
+      }
+
+      if (confirmPayPwdInput) {
+        confirmPayPwdInput.addEventListener('click', () => {
+          showKeypad('請確認交易密碼', v => {
+            confirmPayPwdInput.value = v;
+          });
+        });
+      }
 
       document.getElementById('confirmPayPwd').addEventListener('click', async function() {
         let requestData;
@@ -365,6 +470,11 @@
             return;
           }
 
+          if (!/^\d{6}$/.test(newPassword)) {
+            showMessage('交易密碼必須為6位數字', false);
+            return;
+          }
+
           requestData = {
             new_password: newPassword,
             confirm_password: confirmPassword
@@ -381,6 +491,11 @@
 
           if (password !== confirmPassword) {
             showMessage('兩次密碼輸入不一致', false);
+            return;
+          }
+
+          if (!/^\d{6}$/.test(password)) {
+            showMessage('交易密碼必須為6位數字', false);
             return;
           }
 
@@ -558,7 +673,6 @@
       }
 
     } catch (error) {
-      console.error('获取用户信息失败:', error);
       showMessage('网络连接失败，请检查网络连接', false);
     }
   });

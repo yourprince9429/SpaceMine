@@ -1,6 +1,9 @@
+import traceback
+
 from flask import Blueprint, jsonify, request
-from handlers.withdraw import get_withdrawal_history, apply_withdrawal, get_user_balance
+
 from handlers.auth import get_current_user
+from handlers.withdraw import apply_withdrawal, get_user_balance, get_withdrawal_history
 from models import Withdrawal
 
 withdraw_bp = Blueprint("withdraw", __name__)
@@ -49,10 +52,7 @@ def withdraw_info():
         )
 
     except Exception as e:
-        import traceback
-
-        print(f"提现信息错误: {str(e)}")
-        print(f"错误详情: {traceback.format_exc()}")
+        traceback.print_exc()
         return jsonify({"success": False, "error": "获取提现信息失败"}), 500
 
 
